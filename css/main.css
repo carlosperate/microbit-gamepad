@@ -1,3 +1,7 @@
-#controller-object {
+#controller-svg {
   width: 100%;
+  height: auto;
+}
+.controller-buttons:hover {
+  cursor: pointer;
 }

@@ -5,3 +5,6 @@
 .controller-buttons:hover {
   cursor: pointer;
 }
+.controller-buttons:active {
+  transform: translateY(0.2%);
+}

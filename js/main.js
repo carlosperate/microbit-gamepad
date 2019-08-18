@@ -3,6 +3,7 @@
 
 function dummyClickHandler(e) {
   console.log('click');
+  window.navigator.vibrate(200);
 }
 
 $('#controller-button-up').click(dummyClickHandler);
@@ -15,4 +16,5 @@ $('#controller-button-b').click(dummyClickHandler);
 $('#controller-button-start').click(dummyClickHandler);
 $('#controller-button-select').click(dummyClickHandler);
 
+window.scrollTo(0,1);
 })();

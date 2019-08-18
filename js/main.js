@@ -3,7 +3,10 @@
 
 function dummyClickHandler(e) {
   console.log('click');
-  window.navigator.vibrate(200);
+  navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+  if (navigator.vibrate) {
+    window.navigator.vibrate(25);
+  }
 }
 
 $('#controller-button-up').click(dummyClickHandler);

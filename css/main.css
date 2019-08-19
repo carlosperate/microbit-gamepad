@@ -67,3 +67,34 @@
 .data-list > .title {
   margin: -2.3rem auto 1rem !important;
 }
+
+/* Settings modal */
+#settings-modal {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #000000AA;
+  z-index: 1000;
+  display: none;
+}
+
+#settings-modal > .nes-dialog {
+  background-color: white;
+  border: 4px solid black;
+  max-height: 90%;
+  width: 90%;
+  margin: 5%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+#settings-close {
+  position: absolute;
+  float: right;
+  margin: 5% 5% 0 0;
+  padding: 0;
+  right: 36px;
+  top: 24px;
+}

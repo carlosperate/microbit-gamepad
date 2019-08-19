@@ -10,7 +10,7 @@
   <link rel="manifest" href="site.webmanifest">
   <link rel="apple-touch-icon" href="icon.png">
 
-  <link rel="stylesheet" href="css/vendor/normalize.css">
+  <!-- Normalized Included in Nes link rel="stylesheet" href="css/vendor/normalize.css" -->
   <link rel="stylesheet" href="css/vendor/boilerplate.css">
   <link rel="stylesheet" href="css/vendor/nes-2.2.0.min.css">
   <link rel="stylesheet" href="css/main.css">
@@ -42,14 +42,14 @@
     </div>
   </div>
 
-  <div id="main">
+  <main role="main" id="main">
     <div id="header-buttons">
         <button id="button-connect" type="button" class="nes-btn is-primary">Connect</button>
-        <a class="nes-btn" href="https://makecode.microbit.org/_JLkhLvHu3Ycm" target="_blank">Hex file</a>
+        <a class="nes-btn" href="https://makecode.microbit.org/_JLkhLvHu3Ycm" target="_blank" rel="noopener">Hex file</a>
         <button id="button-settings" type="button" class="nes-btn is-warning">Settings</button>
     </div>
     <div id="controller-svg-div">
-      <img id="full-screen-icon" class="nes-pointer" src="img/full-screen.png">
+      <img id="full-screen-icon" class="nes-pointer" src="img/full-screen.png" alt="full screen icon">
       <svg version="1.1" id="controller-svg" x="0px" y="0px" viewBox="0 270 612 252" enable-background="new 0 270 612 252" xml:space="preserve">
         <!--
           This SVG has been adapated for this project.
@@ -123,7 +123,7 @@
         <p>Feature not yet implemented</p>
       </div>
     </div>
-  </div>
+  </main>
 
   <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>

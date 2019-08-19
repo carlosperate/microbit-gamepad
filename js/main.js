@@ -8,7 +8,16 @@ function log(msg, obj) {
     console.log(msg, obj || '');
 }
 
-$('#connect').click(function() {
+$('#button-connect').click(function() {
+    if (!window.navigator.bluetooth) {
+        return alert('Web Bluetooth is not available in this browser.');
+    }
+
+    // Setting button to connecting state
+    $("#button-connect").text("Connecting...");
+    $("#button-connect").attr('class', 'nes-btn is-disable');
+
+    // Connect using Web Bluetooth
     microbit.requestMicrobit(window.navigator.bluetooth).then(function(device) {
         return microbit.getServices(device);
     }).then(function(services) {
@@ -27,8 +36,18 @@ $('#connect').click(function() {
         }
     }).then(function(info) {
         log('Ready: ', info);
+        // Change button to successful state
+        $("#button-connect").text("Connected");
+        $("#button-connect").attr('class', 'nes-btn is-success');
+        // Scroll to the controller
+        $([document.documentElement, document.body]).animate({
+            scrollTop: $("#controller-svg-div").offset().top
+        }, 1200);
     }).catch(function(err) {
         log('Connection Error: ', err.msg);
+        // Reset button to original state
+        $("#button-connect").text("Connect");
+        $("#button-connect").attr('class', 'nes-btn is-primary');
     });
 });
 
@@ -44,15 +63,32 @@ function sendCommand(cmd) {
     }
 }
 
-$('#controller-button-up').click(() => sendCommand('UP'));
-$('#controller-button-down').click(() => sendCommand('DOWN'));
-$('#controller-button-left').click(() => sendCommand('LEFT'));
-$('#controller-button-right').click(() => sendCommand('RIGHT'));
-$('#controller-button-centre').click(() => sendCommand('CENTRE'));
-$('#controller-button-a').click(() => sendCommand('A'));
-$('#controller-button-b').click(() => sendCommand('B'));
-$('#controller-button-start').click(() => sendCommand('START'));
-$('#controller-button-select').click(() => sendCommand('SELECT'));
+$('#controller-button-up').click(function() {
+    sendCommand('U');
+});
+$('#controller-button-down').click(function() {
+    sendCommand('D');
+});
+$('#controller-button-left').click(function() {
+    sendCommand('L');
+});
+$('#controller-button-right').click(function() {
+    sendCommand('R');
+});
+$('#controller-button-centre').click(function() {
+    sendCommand('C');
+});
+$('#controller-button-a').click(function() {
+    sendCommand('A');
+});
+$('#controller-button-b').click(function() {
+    sendCommand('B');
+});
+$('#controller-button-start').click(function() {
+    sendCommand('S');
+});
+$('#controller-button-select').click(function() {
+    sendCommand('SL');
+});
 
-window.scrollTo(0,1);
 })();

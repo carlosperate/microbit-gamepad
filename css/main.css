@@ -26,16 +26,29 @@
   height: auto;
 }
 
+/* Buttons at the top */
+#header-buttons {
+  margin: 12px;
+  text-align: center;
+}
+
 /* Controller */
 #controller-svg {
   width: 100%;
   height: auto;
 }
+
 .controller-buttons:hover {
   /* cursor: pointer; */
 }
 .controller-buttons:active {
   transform: translateY(0.2%);
+}
+
+#controller-outer-box {
+  stroke: #1a1a1a;
+  stroke-width: 1px;
+  stroke-opacity: 0.2;
 }
 
 /* Commands area */

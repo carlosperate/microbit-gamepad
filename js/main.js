@@ -90,5 +90,10 @@ $('#controller-button-start').click(function() {
 $('#controller-button-select').click(function() {
     sendCommand('SL');
 });
+$('#full-screen-icon').click(function() {
+    if (screenfull.enabled) {
+        screenfull.toggle($('#controller-svg-div')[0]);
+    }
+});
 
 })();

@@ -51,6 +51,15 @@
   stroke-opacity: 0.2;
 }
 
+#full-screen-icon {
+  z-index: 2;
+  position: absolute;
+  height: 40px;
+  margin-top: 1%;
+  right: 3%;
+  opacity: 0.7;
+}
+
 /* Commands area */
 .data-list {
   margin-top: 12px;

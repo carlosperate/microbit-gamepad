@@ -117,5 +117,44 @@
         });
     }
 
+    function setUpCrossEffect() {
+        var stopEvent = function(event) {
+            var e = event || window.event;
+            e.preventDefault && e.preventDefault();
+            e.stopPropagation && e.stopPropagation();
+            e.cancelBubble = true;
+            e.returnValue = false;
+            return false;
+        };
+        $('body').on('touchend touchcancel mouseup',function(e) {
+            $('#controller-cross-border').css('transform', '');
+            $('#controller-cross').css('transform', '');
+        });
+        $('#controller-button-right').on('touchstart mousedown', function(e) {
+            // These two lines have a more 3D effect on that's less realistic
+            //$('#controller-cross-border').css('transform', 'rotate3d(0, 1, 0, -15deg)');
+            //$('#controller-cross').css('transform', 'rotate3d(0, 1, 0, 10deg)');
+            $('#controller-cross').css('transform', 'rotateY(15deg) translate(-5px)');
+            $('#controller-cross').css('transform-origin', 'center');
+            return stopEvent(e);
+        });
+        $('#controller-button-left').on('touchstart mousedown', function(e) {
+            $('#controller-cross').css('transform', 'rotateY(345deg) translate(-10px)');
+            $('#controller-cross').css('transform-origin', 'center');
+            return stopEvent(e);
+        });
+        $('#controller-button-up').on('touchstart mousedown', function(e) {
+            $('#controller-cross').css('transform', 'rotateX(15deg) translate(0, 8px)');
+            $('#controller-cross').css('transform-origin', 'center');
+            return stopEvent(e);
+        });
+        $('#controller-button-down').on('touchstart mousedown', function(e) {
+            $('#controller-cross').css('transform', 'rotateX(345deg) translate(0px, 13px)');
+            $('#controller-cross').css('transform-origin', 'center');
+            return stopEvent(e);
+        });
+    }
+
     setUpButtonHandlers();
+    setUpCrossEffect();
 })();

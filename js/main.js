@@ -155,6 +155,24 @@
         });
     }
 
+    function setUpDeviceControllerOrientation() {
+        var clamp = function (num, min, max) {
+            return num <= min ? min : num >= max ? max : num;
+        };
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener("deviceorientation", function(event) {
+                log('d: ' + event.alpha + ', l-r: ' + event.gamma + ', f-b: ' + event.beta);
+                var yaw = clamp(event.alpha, -45, 45);
+                var pitch = clamp((event.beta * -1) + 90, -45, 45);
+                $('#controller-svg-div').css('transform-origin', 'center');
+                $('#controller-svg-div').css('transform', 'perspective(5000px) rotateY(' + yaw + 'deg) rotateX(' + pitch + 'deg)');
+            }, true);
+        } else {
+            return alert('This browser or device does not support the motion API.');
+        }
+    }
+
     setUpButtonHandlers();
     setUpCrossEffect();
+    setUpDeviceControllerOrientation();
 })();

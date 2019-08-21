@@ -37,8 +37,38 @@ body {
 
 /* Buttons at the top */
 #header-buttons {
-  margin: 12px;
+  margin: 10px 0px;
   text-align: center;
+  white-space: nowrap;
+}
+
+#button-connect,
+#button-settings,
+#button-hex {
+  width: -moz-calc(33% - 14px);
+  width: -webkit-calc(33% - 14px);
+  width: -o-calc(33% - 14px);
+  width: calc(33% - 14px);
+  margin: 0;
+  white-space: nowrap;
+}
+
+@media(max-width: 560px) {
+  body {
+    font-size: 10px;
+  }
+  #header-buttons {
+    margin: 8px 0px;
+  }
+  #button-connect,
+  #button-settings,
+  #button-hex {
+    width: -moz-calc(33% - 10px);
+    width: -webkit-calc(33% - 10px);
+    width: -o-calc(33% - 10px);
+    width: calc(33% - 10px);
+    padding: 3px 3px;
+  }
 }
 
 /* Controller */

@@ -3,6 +3,28 @@
 
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
     var microbitUart = null;
+    var settings = {
+        'vibrate': {
+            'value': false,
+            'enable': function() {},
+            'disable': function() {}
+        },
+        'sound':  {
+            'value': false,
+            'enable': function() {},
+            'disable': function() {}
+        },
+        'logs':  {
+            'value': false,
+            'enable': function() {},
+            'disable': function() {}
+        },
+        'tilt':  {
+            'value': false,
+            'enable': setUpDeviceControllerOrientation,
+            'disable': unsetDeviceControllerOrientation,
+        },
+    };
 
     function log(msg, obj) {
         console.log(msg, obj || '');
@@ -120,11 +142,13 @@
     function setUpCrossEffect() {
         var stopEvent = function(event) {
             var e = event || window.event;
-            e.preventDefault && e.preventDefault();
-            e.stopPropagation && e.stopPropagation();
+            if (e.cancelable) {
+                if (e.preventDefault)  e.preventDefault();
+                if (e.stopPropagation) e.stopPropagation();
+            }
             e.cancelBubble = true;
             e.returnValue = false;
-            return false;
+            return true;
         };
         $('body').on('touchend touchcancel mouseup',function(e) {
             $('#controller-cross-border').css('transform', '');
@@ -155,6 +179,49 @@
         });
     }
 
+    function setUpSettings() {
+        Object.keys(settings).forEach(function(key) {
+            $('#settings-' + key).prop('checked', settings[key].value);
+            $('#settings-' + key).change(function() {
+                settings[key].value = this.checked;
+                if (settings[key].value) {
+                    settings[key].enable();
+                } else {
+                    settings[key].disable();
+                }
+                log('Setting ' + key + (this.checked ? ' enabled.' : ' disabled.'));
+            });
+        });
+    }
+
+    function deviceRotationControllerHandler(event) {
+        log('d: ' + event.alpha + ', l-r: ' + event.gamma + ', f-b: ' + event.beta);
+        var clamp = function (num, min, max) {
+            return num <= min ? min : num >= max ? max : num;
+        };
+        var yaw = clamp(event.alpha, -45, 45);
+        var pitch = clamp((event.beta * -1), -45, 45);
+        $('#controller-svg-div').css('transform-origin', 'center');
+        $('#controller-svg-div').css('transform', 'perspective(5000px) rotateY(' + yaw + 'deg) rotateX(' + pitch + 'deg)');
+    }
+
+    function setUpDeviceControllerOrientation() {
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener("deviceorientation", deviceRotationControllerHandler, true);
+        } else {
+            return alert('This browser or device does not support the motion API.');
+        }
+    }
+
+    function unsetDeviceControllerOrientation() {
+        if (window.DeviceOrientationEvent) {
+            window.removeEventListener("deviceorientation", deviceRotationControllerHandler, true);
+        }
+        $('#controller-svg-div').css('transform-origin', '');
+        $('#controller-svg-div').css('transform', '');
+    }
+
+    setUpSettings();
     setUpButtonHandlers();
     setUpCrossEffect();
 })();

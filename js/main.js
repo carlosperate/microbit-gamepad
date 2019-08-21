@@ -6,7 +6,13 @@
     var settings = {
         'vibrate': {
             'value': false,
-            'enable': function() {},
+            'enable': function() {
+                if (navigator.vibrate) {
+                    window.navigator.vibrate(25);
+                } else {
+                    alert('This browser or device do not support vibration.');
+                }
+            },
             'disable': function() {}
         },
         'sound':  {
@@ -80,7 +86,7 @@
         } else {
             log('UART not yet available.');
         }
-        if (navigator.vibrate) {
+        if (settings.vibrate.value && navigator.vibrate) {
             window.navigator.vibrate(25);
         }
     }

@@ -1,4 +1,4 @@
-(function() {
+(function($, screenfull) {
     'use strict';
 
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
@@ -103,32 +103,11 @@
 
     function setUpButtonHandlers() {
         $('#button-connect').click(connectWebBle);
-        $('#controller-button-up').click(function() {
-            sendCommand('U');
+        $('#button-settings').click(function() {
+            showSettingsModal(true);
         });
-        $('#controller-button-down').click(function() {
-            sendCommand('D');
-        });
-        $('#controller-button-left').click(function() {
-            sendCommand('L');
-        });
-        $('#controller-button-right').click(function() {
-            sendCommand('R');
-        });
-        $('#controller-button-centre').click(function() {
-            sendCommand('C');
-        });
-        $('#controller-button-a').click(function() {
-            sendCommand('A');
-        });
-        $('#controller-button-b').click(function() {
-            sendCommand('B');
-        });
-        $('#controller-button-start').click(function() {
-            sendCommand('S');
-        });
-        $('#controller-button-select').click(function() {
-            sendCommand('SL');
+        $('#settings-close').click(function() {
+            showSettingsModal(false);
         });
         $('#full-screen-icon').click(function() {
             if (screenfull.enabled) {
@@ -137,51 +116,51 @@
                 log('ScreenFull not available.');
             }
         });
-        $('#button-settings').click(function() {
-            showSettingsModal(true);
-        });
-        $('#settings-close').click(function() {
-            showSettingsModal(false);
-        });
     }
 
-    function setUpCrossEffect() {
-        var stopEvent = function(event) {
-            var e = event || window.event;
-            if (e.cancelable) {
-                if (e.preventDefault)  e.preventDefault();
-                if (e.stopPropagation) e.stopPropagation();
-            }
-            e.cancelBubble = true;
-            e.returnValue = false;
-            return true;
-        };
-        $('body').on('touchend touchcancel mouseup',function(e) {
-            $('#controller-cross-border').css('transform', '');
-            $('#controller-cross').css('transform', '');
+    function setUpControllerHandlers() {
+        $('#controller-button-a').singleTouchClick(function(e) {
+            sendCommand('A');
         });
-        $('#controller-button-right').on('touchstart mousedown', function(e) {
+        $('#controller-button-b').singleTouchClick(function(e) {
+            sendCommand('B');
+        });
+        $('#controller-button-start').singleTouchClick(function(e) {
+            sendCommand('S');
+        });
+        $('#controller-button-select').singleTouchClick(function(e) {
+            sendCommand('SL');
+        });
+        $('#controller-button-centre').singleTouchClick(function(e) {
+            sendCommand('C');
+        });
+        // The d-pad also has some CSS changes on click
+        $('#controller-button-up').singleTouchClick(function(e) {
+            $('#controller-cross').css('transform', 'rotateX(15deg) translate(0, 8px)');
+            $('#controller-cross').css('transform-origin', 'center');
+            sendCommand('U');
+        });
+        $('#controller-button-down').singleTouchClick(function(e) {
+            $('#controller-cross').css('transform', 'rotateX(345deg) translate(0px, 13px)');
+            $('#controller-cross').css('transform-origin', 'center');
+            sendCommand('D');
+        });
+        $('#controller-button-left').singleTouchClick(function(e) {
+            $('#controller-cross').css('transform', 'rotateY(345deg) translate(-10px)');
+            $('#controller-cross').css('transform-origin', 'center');
+            sendCommand('L');
+        });
+        $('#controller-button-right').singleTouchClick(function(e) {
             // These two lines have a more 3D effect on that's less realistic
             //$('#controller-cross-border').css('transform', 'rotate3d(0, 1, 0, -15deg)');
             //$('#controller-cross').css('transform', 'rotate3d(0, 1, 0, 10deg)');
             $('#controller-cross').css('transform', 'rotateY(15deg) translate(-5px)');
             $('#controller-cross').css('transform-origin', 'center');
-            return stopEvent(e);
+            sendCommand('R');
         });
-        $('#controller-button-left').on('touchstart mousedown', function(e) {
-            $('#controller-cross').css('transform', 'rotateY(345deg) translate(-10px)');
-            $('#controller-cross').css('transform-origin', 'center');
-            return stopEvent(e);
-        });
-        $('#controller-button-up').on('touchstart mousedown', function(e) {
-            $('#controller-cross').css('transform', 'rotateX(15deg) translate(0, 8px)');
-            $('#controller-cross').css('transform-origin', 'center');
-            return stopEvent(e);
-        });
-        $('#controller-button-down').on('touchstart mousedown', function(e) {
-            $('#controller-cross').css('transform', 'rotateX(345deg) translate(0px, 13px)');
-            $('#controller-cross').css('transform-origin', 'center');
-            return stopEvent(e);
+        $('body').singleTouchClickOff(function(e) {
+            $('#controller-cross-border').css('transform', '');
+            $('#controller-cross').css('transform', '');
         });
     }
 
@@ -229,5 +208,5 @@
 
     setUpSettings();
     setUpButtonHandlers();
-    setUpCrossEffect();
-})();
+    setUpControllerHandlers();
+})(jQuery, screenfull);

@@ -1,4 +1,4 @@
-(function($, screenfull) {
+(function($, screenfull, sound) {
     'use strict';
 
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
@@ -17,8 +17,8 @@
         },
         'sound':  {
             'value': false,
-            'enable': function() {},
-            'disable': function() {}
+            'enable': sound.enable,
+            'disable': sound.disable,
         },
         'logs':  {
             'value': false,
@@ -121,34 +121,42 @@
     function setUpControllerHandlers() {
         $('#controller-button-a').singleTouchClick(function(e) {
             sendCommand('A');
+            sound.play('a');
         });
         $('#controller-button-b').singleTouchClick(function(e) {
             sendCommand('B');
+            sound.play('b');
         });
         $('#controller-button-start').singleTouchClick(function(e) {
             sendCommand('S');
+            sound.play('start');
         });
         $('#controller-button-select').singleTouchClick(function(e) {
             sendCommand('SL');
+            sound.play('select');
         });
         $('#controller-button-centre').singleTouchClick(function(e) {
             sendCommand('C');
+            sound.play('center');
         });
         // The d-pad also has some CSS changes on click
         $('#controller-button-up').singleTouchClick(function(e) {
             $('#controller-cross').css('transform', 'rotateX(15deg) translate(0, 8px)');
             $('#controller-cross').css('transform-origin', 'center');
             sendCommand('U');
+            sound.play('up');
         });
         $('#controller-button-down').singleTouchClick(function(e) {
             $('#controller-cross').css('transform', 'rotateX(345deg) translate(0px, 13px)');
             $('#controller-cross').css('transform-origin', 'center');
             sendCommand('D');
+            sound.play('down');
         });
         $('#controller-button-left').singleTouchClick(function(e) {
             $('#controller-cross').css('transform', 'rotateY(345deg) translate(-10px)');
             $('#controller-cross').css('transform-origin', 'center');
             sendCommand('L');
+            sound.play('left');
         });
         $('#controller-button-right').singleTouchClick(function(e) {
             // These two lines have a more 3D effect on that's less realistic
@@ -157,6 +165,7 @@
             $('#controller-cross').css('transform', 'rotateY(15deg) translate(-5px)');
             $('#controller-cross').css('transform-origin', 'center');
             sendCommand('R');
+            sound.play('right');
         });
         $('body').singleTouchClickOff(function(e) {
             $('#controller-cross-border').css('transform', '');
@@ -209,4 +218,4 @@
     setUpSettings();
     setUpButtonHandlers();
     setUpControllerHandlers();
-})(jQuery, screenfull);
+})(jQuery, screenfull, sound);

@@ -22,8 +22,12 @@
         },
         'logs':  {
             'value': false,
-            'enable': function() {},
-            'disable': function() {}
+            'enable': function() {
+                $('#below-controller-content').show();
+            },
+            'disable': function() {
+                $('#below-controller-content').hide();
+            }
         },
         'tilt':  {
             'value': false,

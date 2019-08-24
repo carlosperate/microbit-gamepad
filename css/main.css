@@ -21,6 +21,18 @@ body {
   user-select: none;
 }
 
+@media(max-width: 768px) {
+  body {
+    font-size: 13px;
+  }
+}
+
+@media(max-width: 560px) {
+  body {
+    font-size: 10px;
+  }
+}
+
 /* Main page layout */
 #main {
   display: table;
@@ -33,6 +45,7 @@ body {
 }
 #below-controller-content {
   height: auto;
+  display: none;
 }
 
 /* Buttons at the top */
@@ -54,9 +67,6 @@ body {
 }
 
 @media(max-width: 560px) {
-  body {
-    font-size: 10px;
-  }
   #header-buttons {
     margin: 8px 0px;
   }
@@ -100,11 +110,37 @@ body {
 }
 
 /* Commands area */
+#commands-log {
+  height: -moz-calc(100vh - 190px);
+  height: -webkit-calc(100vh - 190px);
+  height: -o-calc(100vh - 190px);
+  height: calc(100vh - 190px);
+  overflow-x: hidden;
+  overflow-y: scroll;
+  margin: 1rem auto !important;
+}
 .data-list {
   margin-top: 12px;
 }
-.data-list > .title {
-  margin: -2.3rem auto 1rem !important;
+#below-controller-content > .title {
+  position: absolute;
+  left: -moz-calc(50% - 70px);
+  left: -webkit-calc(50% - 70px);
+  left: -o-calc(50% - 70px);
+  left: calc(50% - 70px);
+  z-index: 10;
+  display: table;
+  margin: 0rem auto 0rem;
+  padding: 0px 15px;
+  line-height: 0.5rem;
+  font-size: 1rem;
+  background-color: #fff;
+}
+
+@media(max-width: 768px) {
+  .nes-container {
+    padding: 1.5rem 1rem;
+  }
 }
 
 /* Settings modal */

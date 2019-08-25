@@ -2,6 +2,7 @@
     'use strict';
 
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+    var pageLoadTime = Date.now();
     var microbitUart = null;
     var settings = {
         'vibrate': {
@@ -21,7 +22,7 @@
             'disable': sound.disable,
         },
         'logs':  {
-            'value': false,
+            'value': true,
             'enable': function() {
                 $('#below-controller-content').show();
             },
@@ -38,6 +39,15 @@
 
     function log(msg, obj) {
         console.log(msg, obj || '');
+        var elapsedMs = Date.now() - pageLoadTime;
+        if (obj) {
+            try {
+                msg += JSON.stringify(obj, null, 2);
+            } catch (e) {
+                // Do nothing
+            }
+        }
+        $('#commands-log').prepend('<p>[' + elapsedMs + 'ms] ' + msg + '</p>');
     }
 
     function connectWebBle() {
@@ -67,7 +77,7 @@
                 });
             }
         }).then(function(info) {
-            log('Ready: ', info);
+            log('Connected: ', info);
             // Change button to successful state
             $("#button-connect").text("Connected");
             $("#button-connect").attr('class', 'nes-btn is-success');
@@ -84,12 +94,13 @@
     }
 
     function sendCommand(cmd) {
-        log('Command: ' + cmd);
+        var logMsg = 'Command: ' + cmd;
         if (microbitUart) {
             microbitUart.send(new TextEncoder().encode(cmd + '\n'));
         } else {
-            log('UART not yet available.');
+            logMsg += ' (not connected)';
         }
+        log(logMsg);
         if (settings.vibrate.value && navigator.vibrate) {
             window.navigator.vibrate(25);
         }
@@ -180,6 +191,9 @@
     function setUpSettings() {
         Object.keys(settings).forEach(function(key) {
             $('#settings-' + key).prop('checked', settings[key].value);
+            if (settings[key].value) {
+                settings[key].enable();
+            }
             $('#settings-' + key).change(function() {
                 settings[key].value = this.checked;
                 if (settings[key].value) {

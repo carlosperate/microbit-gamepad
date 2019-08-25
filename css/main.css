@@ -23,7 +23,7 @@ body {
 
 @media(max-width: 768px) {
   body {
-    font-size: 13px;
+    font-size: 12px;
   }
 }
 
@@ -124,10 +124,10 @@ body {
 }
 #below-controller-content > .title {
   position: absolute;
-  left: -moz-calc(50% - 70px);
-  left: -webkit-calc(50% - 70px);
-  left: -o-calc(50% - 70px);
-  left: calc(50% - 70px);
+  left: -moz-calc(50% - 50px);
+  left: -webkit-calc(50% - 50px);
+  left: -o-calc(50% - 50px);
+  left: calc(50% - 50px);
   z-index: 10;
   display: table;
   margin: 0rem auto 0rem;
@@ -135,6 +135,10 @@ body {
   line-height: 0.5rem;
   font-size: 1rem;
   background-color: #fff;
+}
+#commands-log > p {
+  padding: 0;
+  margin: 0;
 }
 
 @media(max-width: 768px) {

@@ -12,6 +12,7 @@
                     window.navigator.vibrate(25);
                 } else {
                     alert('This browser or device do not support vibration.');
+                    $("#settings-vibrate").prop('checked', false);
                 }
             },
             'disable': function() {}
@@ -78,6 +79,7 @@
             }
         }).then(function(info) {
             log('Connected: ', info);
+            sound.play('connected');
             // Change button to successful state
             $("#button-connect").text("Connected");
             $("#button-connect").attr('class', 'nes-btn is-success');

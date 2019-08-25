@@ -195,6 +195,17 @@
   <script src="js/vendor/microbit-0.4.0.umd.js"></script>
   <script src="js/sound.js"></script>
   <script src="js/main.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('service-worker.js').then(function(reg) {
+            console.log('Service worker registered:', reg);
+          }).catch(function(err) {
+            console.log('Service worker registration failed: ', err);
+          });
+      });
+    }
+  </script>
 </body>
 
 </html>

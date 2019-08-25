@@ -6,23 +6,26 @@
     var microbitUart = null;
     var settings = {
         'vibrate': {
+            'type': 'checkbox',
             'value': false,
             'enable': function() {
                 if (navigator.vibrate) {
                     window.navigator.vibrate(25);
                 } else {
                     alert('This browser or device do not support vibration.');
-                    $("#settings-vibrate").prop('checked', false);
+                    $('#settings-vibrate').prop('checked', false);
                 }
             },
             'disable': function() {}
         },
-        'sound':  {
+        'sound': {
+            'type': 'checkbox',
             'value': false,
             'enable': sound.enable,
             'disable': sound.disable,
         },
-        'logs':  {
+        'logs': {
+            'type': 'checkbox',
             'value': true,
             'enable': function() {
                 $('#below-controller-content').show();
@@ -32,9 +35,46 @@
             }
         },
         'tilt':  {
+            'type': 'checkbox',
             'value': false,
             'enable': setUpDeviceControllerOrientation,
             'disable': unsetDeviceControllerOrientation,
+        },
+        'controller-up': {
+            'type': 'input-text',
+            'value': 'U',
+        },
+        'controller-right': {
+            'type': 'input-text',
+            'value': 'R',
+        },
+        'controller-down': {
+            'type': 'input-text',
+            'value': 'D',
+        },
+        'controller-left': {
+            'type': 'input-text',
+            'value': 'L',
+        },
+        'controller-center': {
+            'type': 'input-text',
+            'value': 'C',
+        },
+        'controller-a': {
+            'type': 'input-text',
+            'value': 'A',
+        },
+        'controller-b': {
+            'type': 'input-text',
+            'value': 'B',
+        },
+        'controller-start': {
+            'type': 'input-text',
+            'value': 'S',
+        },
+        'controller-select': {
+            'type': 'input-text',
+            'value': 'SL',
         },
     };
 
@@ -137,42 +177,42 @@
 
     function setUpControllerHandlers() {
         $('#controller-button-a').singleTouchClick(function(e) {
-            sendCommand('A');
+            sendCommand(settings['controller-a'].value);
             sound.play('a');
         });
         $('#controller-button-b').singleTouchClick(function(e) {
-            sendCommand('B');
+            sendCommand(settings['controller-b'].value);
             sound.play('b');
         });
         $('#controller-button-start').singleTouchClick(function(e) {
-            sendCommand('S');
+            sendCommand(settings['controller-start'].value);
             sound.play('start');
         });
         $('#controller-button-select').singleTouchClick(function(e) {
-            sendCommand('SL');
+            sendCommand(settings['controller-select'].value);
             sound.play('select');
         });
         $('#controller-button-centre').singleTouchClick(function(e) {
-            sendCommand('C');
+            sendCommand(settings['controller-center'].value);
             sound.play('center');
         });
         // The d-pad also has some CSS changes on click
         $('#controller-button-up').singleTouchClick(function(e) {
             $('#controller-cross').css('transform', 'rotateX(15deg) translate(0, 8px)');
             $('#controller-cross').css('transform-origin', 'center');
-            sendCommand('U');
+            sendCommand(settings['controller-up'].value);
             sound.play('up');
         });
         $('#controller-button-down').singleTouchClick(function(e) {
             $('#controller-cross').css('transform', 'rotateX(345deg) translate(0px, 13px)');
             $('#controller-cross').css('transform-origin', 'center');
-            sendCommand('D');
+            sendCommand(settings['controller-down'].value);
             sound.play('down');
         });
         $('#controller-button-left').singleTouchClick(function(e) {
             $('#controller-cross').css('transform', 'rotateY(345deg) translate(-10px)');
             $('#controller-cross').css('transform-origin', 'center');
-            sendCommand('L');
+            sendCommand(settings['controller-left'].value);
             sound.play('left');
         });
         $('#controller-button-right').singleTouchClick(function(e) {
@@ -181,7 +221,7 @@
             //$('#controller-cross').css('transform', 'rotate3d(0, 1, 0, 10deg)');
             $('#controller-cross').css('transform', 'rotateY(15deg) translate(-5px)');
             $('#controller-cross').css('transform-origin', 'center');
-            sendCommand('R');
+            sendCommand(settings['controller-right'].value);
             sound.play('right');
         });
         $('body').singleTouchClickOff(function(e) {
@@ -192,19 +232,27 @@
 
     function setUpSettings() {
         Object.keys(settings).forEach(function(key) {
-            $('#settings-' + key).prop('checked', settings[key].value);
-            if (settings[key].value) {
-                settings[key].enable();
-            }
-            $('#settings-' + key).change(function() {
-                settings[key].value = this.checked;
+            if (settings[key].type === 'checkbox') {
+                $('#settings-' + key).prop('checked', settings[key].value);
                 if (settings[key].value) {
                     settings[key].enable();
-                } else {
-                    settings[key].disable();
                 }
-                log('Setting ' + key + (this.checked ? ' enabled.' : ' disabled.'));
-            });
+                $('#settings-' + key).change(function() {
+                    settings[key].value = this.checked;
+                    if (settings[key].value) {
+                        settings[key].enable();
+                    } else {
+                        settings[key].disable();
+                    }
+                    log('Setting ' + key + (this.checked ? ' enabled.' : ' disabled.'));
+                });
+            } else if (settings[key].type === 'input-text') {
+                $('#settings-' + key).val(settings[key].value);
+                $('#settings-' + key).change(function() {
+                    var input = $(this);
+                    settings[key].value = input.val();
+                });
+            }
         });
     }
 
@@ -221,7 +269,7 @@
 
     function setUpDeviceControllerOrientation() {
         if (window.DeviceOrientationEvent) {
-            window.addEventListener("deviceorientation", deviceRotationControllerHandler, true);
+            window.addEventListener('deviceorientation', deviceRotationControllerHandler, true);
         } else {
             return alert('This browser or device does not support the motion API.');
         }
@@ -229,7 +277,7 @@
 
     function unsetDeviceControllerOrientation() {
         if (window.DeviceOrientationEvent) {
-            window.removeEventListener("deviceorientation", deviceRotationControllerHandler, true);
+            window.removeEventListener('deviceorientation', deviceRotationControllerHandler, true);
         }
         $('#controller-svg-div').css('transform-origin', '');
         $('#controller-svg-div').css('transform', '');

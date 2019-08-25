@@ -25,11 +25,17 @@ body {
   body {
     font-size: 12px;
   }
+  .title {
+    font-size: 14px;
+  }
 }
 
 @media(max-width: 560px) {
   body {
     font-size: 10px;
+  }
+  .title {
+    font-size: 12px;
   }
 }
 
@@ -167,6 +173,13 @@ body {
   margin: 5%;
   overflow-y: scroll;
   overflow-x: hidden;
+}
+
+.nes-field {
+  margin: 25px 10px;
+}
+.nes-select {
+  margin: 0px 0px 0px 10px;
 }
 
 #settings-close {

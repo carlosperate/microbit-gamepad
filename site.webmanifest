@@ -1,7 +1,8 @@
 {
   "short_name": "micro:bit Gamepad",
   "name": "micro:bit Gamepad",
-  "icons": [{
+  "icons": [
+    {
       "src": "img/icons/android-chrome-192x192.png?v1.0=OmKy4kNd7W",
       "sizes": "192x192",
       "type": "image/png"

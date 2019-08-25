@@ -1,6 +1,8 @@
 {
   "short_name": "micro:bit Gamepad",
   "name": "micro:bit Gamepad",
+  "lang": "en",
+  "start_url": "/index.html",
   "icons": [
     {
       "src": "img/icons/android-chrome-192x192.png?v1.0=OmKy4kNd7W",
@@ -12,7 +14,7 @@
       "type": "image/png"
     }
   ],
-  "start_url": "/?utm_source=homescreen",
   "background_color": "#1a1a1a",
-  "theme_color": "#1a1a1a"
+  "theme_color": "#1a1a1a",
+  "display": "standalone"
 }

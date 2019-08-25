@@ -256,6 +256,34 @@
         });
     }
 
+    function setUpInstallBanner() {
+        $('#install-close').click(function closeInstallBanner() {
+            $('#install-banner').hide();
+        });
+
+        var deferredPrompt;
+        window.addEventListener('beforeinstallprompt', function(event) {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            event.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = event;
+            // Attach the install prompt to a user gesture
+            $('#button-install').click(function(e) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(function(choiceResult) {
+                    if (choiceResult.outcome === 'accepted') {
+                        log('Accepted the Add To Home Screen prompt.');
+                    } else {
+                        log('Dismissed the Add To Home Screen prompt.');
+                    }
+                    closeInstallBanner();
+                    deferredPrompt = null;
+                });
+            });
+            $('#install-banner').show();
+        });
+    }
+
     function deviceRotationControllerHandler(event) {
         log('d: ' + event.alpha + ', l-r: ' + event.gamma + ', f-b: ' + event.beta);
         var clamp = function (num, min, max) {
@@ -286,4 +314,5 @@
     setUpSettings();
     setUpButtonHandlers();
     setUpControllerHandlers();
+    setUpInstallBanner();
 })(jQuery, screenfull, sound);

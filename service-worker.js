@@ -17,6 +17,7 @@ const precacheResources = [
     'js/vendor/jquery-touch-click.js',
     'js/vendor/screenfull-4.2.1.min.js',
     'js/vendor/microbit-0.4.0.umd.js',
+    'js/microbitBle.js',
     'js/sound.js',
     'js/main.js',
     // Images

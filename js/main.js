@@ -1,9 +1,8 @@
-(function($, screenfull, sound) {
+(function($, screenFull, microbitBle, sound) {
     'use strict';
 
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
     var pageLoadTime = Date.now();
-    var microbitUart = null;
     var settings = {
         'vibrate': {
             'type': 'checkbox',
@@ -91,63 +90,6 @@
         $('#commands-log').prepend('<p>[' + elapsedMs + 'ms] ' + msg + '</p>');
     }
 
-    function connectWebBle() {
-        if (!window.navigator.bluetooth) {
-            return alert('Web Bluetooth is not available in this browser.');
-        }
-
-        // Setting button to connecting state
-        $("#button-connect").text("Connecting...");
-        $("#button-connect").attr('class', 'nes-btn is-disable');
-
-        // Connect using Web Bluetooth
-        microbit.requestMicrobit(window.navigator.bluetooth).then(function(device) {
-            return microbit.getServices(device);
-        }).then(function(services) {
-            if (services.uartService) {
-                microbitUart = services.uartService;
-                services.uartService.addEventListener('receiveText', function(msg) {
-                    log('UART received: ' + msg);
-                });
-            }
-            if (services.deviceInformationService) {
-                return services.deviceInformationService.readDeviceInformation();
-            } else {
-                return new Promise(function(resolve, reject) {
-                    resolve('No device info.');
-                });
-            }
-        }).then(function(info) {
-            log('Connected: ', info);
-            sound.play('connected');
-            // Change button to successful state
-            $("#button-connect").text("Connected");
-            $("#button-connect").attr('class', 'nes-btn is-success');
-            // Scroll to the controller
-            $([document.documentElement, document.body]).animate({
-                scrollTop: $("#controller-svg-div").offset().top
-            }, 1200);
-        }).catch(function(err) {
-            log('Connection Error: ', err.msg);
-            // Reset button to original state
-            $("#button-connect").text("Connect");
-            $("#button-connect").attr('class', 'nes-btn is-primary');
-        });
-    }
-
-    function sendCommand(cmd) {
-        var logMsg = 'Command: ' + cmd;
-        if (microbitUart) {
-            microbitUart.send(new TextEncoder().encode(cmd + '\n'));
-        } else {
-            logMsg += ' (not connected)';
-        }
-        log(logMsg);
-        if (settings.vibrate.value && navigator.vibrate) {
-            window.navigator.vibrate(25);
-        }
-    }
-
     function showSettingsModal(show) {
         if (show) {
             $('#settings-modal').fadeIn(500);
@@ -156,6 +98,49 @@
             $('#settings-modal').fadeOut(500);
             $('body').css('overflow', 'initial');
         }
+    }
+
+    function connectButtonActive(active) {
+        if (active) {
+            $("#button-connect").text("Connected");
+            $("#button-connect").attr('class', 'nes-btn is-success');
+        } else {
+            $("#button-connect").text("Connect");
+            $("#button-connect").attr('class', 'nes-btn is-primary');
+        }
+    }
+
+    function connectWebBle() {
+        // Setting button to connecting state
+        $("#button-connect").text("Connecting...");
+        $("#button-connect").attr('class', 'nes-btn is-disable');
+        microbitBle.connect().then(function(info) {
+            log('Connected: ', info);
+            sound.play('connected');
+            connectButtonActive(true);
+            // Scroll to the controller
+            $([document.documentElement, document.body]).animate({
+                scrollTop: $("#controller-svg-div").offset().top
+            }, 1200);
+        }).catch(function(err) {
+            log('Connection Error: ' + err.message);
+            // Reset button to original state
+            connectButtonActive(false);
+        });
+    }
+
+    function controllerButtonPressed(buttonName) {
+        var logMsg = 'Pressed: ' + buttonName;
+        sound.play(buttonName);
+        if (settings.vibrate.value && navigator.vibrate) {
+            window.navigator.vibrate(25);
+        }
+        if (microbitBle.isConnected()) {
+            microbitBle.sendMsg(settings['controller-' + buttonName].value);
+        } else {
+            logMsg += ' (not connected)';
+        }
+        log(logMsg);
     }
 
     function setUpButtonHandlers() {
@@ -167,8 +152,8 @@
             showSettingsModal(false);
         });
         $('#full-screen-icon').click(function() {
-            if (screenfull.enabled) {
-                screenfull.toggle($('#controller-svg-div')[0]);
+            if (screenFull.enabled) {
+                screenFull.toggle($('#controller-svg-div')[0]);
             } else {
                 log('ScreenFull not available.');
             }
@@ -177,43 +162,35 @@
 
     function setUpControllerHandlers() {
         $('#controller-button-a').singleTouchClick(function(e) {
-            sendCommand(settings['controller-a'].value);
-            sound.play('a');
+            controllerButtonPressed('a');
         });
         $('#controller-button-b').singleTouchClick(function(e) {
-            sendCommand(settings['controller-b'].value);
-            sound.play('b');
+            controllerButtonPressed('b');
         });
         $('#controller-button-start').singleTouchClick(function(e) {
-            sendCommand(settings['controller-start'].value);
-            sound.play('start');
+            controllerButtonPressed('start');
         });
         $('#controller-button-select').singleTouchClick(function(e) {
-            sendCommand(settings['controller-select'].value);
-            sound.play('select');
+            controllerButtonPressed('select');
         });
         $('#controller-button-centre').singleTouchClick(function(e) {
-            sendCommand(settings['controller-center'].value);
-            sound.play('center');
+            controllerButtonPressed('center');
         });
         // The d-pad also has some CSS changes on click
         $('#controller-button-up').singleTouchClick(function(e) {
             $('#controller-cross').css('transform', 'rotateX(15deg) translate(0, 8px)');
             $('#controller-cross').css('transform-origin', 'center');
-            sendCommand(settings['controller-up'].value);
-            sound.play('up');
+            controllerButtonPressed('up');
         });
         $('#controller-button-down').singleTouchClick(function(e) {
             $('#controller-cross').css('transform', 'rotateX(345deg) translate(0px, 13px)');
             $('#controller-cross').css('transform-origin', 'center');
-            sendCommand(settings['controller-down'].value);
-            sound.play('down');
+            controllerButtonPressed('down');
         });
         $('#controller-button-left').singleTouchClick(function(e) {
             $('#controller-cross').css('transform', 'rotateY(345deg) translate(-10px)');
             $('#controller-cross').css('transform-origin', 'center');
-            sendCommand(settings['controller-left'].value);
-            sound.play('left');
+            controllerButtonPressed('left');
         });
         $('#controller-button-right').singleTouchClick(function(e) {
             // These two lines have a more 3D effect on that's less realistic
@@ -221,8 +198,7 @@
             //$('#controller-cross').css('transform', 'rotate3d(0, 1, 0, 10deg)');
             $('#controller-cross').css('transform', 'rotateY(15deg) translate(-5px)');
             $('#controller-cross').css('transform-origin', 'center');
-            sendCommand(settings['controller-right'].value);
-            sound.play('right');
+            controllerButtonPressed('right');
         });
         $('body').singleTouchClickOff(function(e) {
             $('#controller-cross-border').css('transform', '');
@@ -315,4 +291,4 @@
     setUpButtonHandlers();
     setUpControllerHandlers();
     setUpInstallBanner();
-})(jQuery, screenfull, sound);
+})(jQuery, screenfull, microbitBle, sound);

@@ -26,7 +26,7 @@
         },
         'logs': {
             'type': 'checkbox',
-            'value': true,
+            'value': false,
             'enable': function() {
                 $('#below-controller-content').show();
             },
